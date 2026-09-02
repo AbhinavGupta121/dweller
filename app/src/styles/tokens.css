@@ -1,0 +1,67 @@
+/**
+ * Design tokens. Single source of truth for colour, type and spacing.
+ *
+ * Two rules worth stating because they are easy to erode later:
+ *   - There is one accent, and it is amber. Blue is banned because it makes the
+ *     app read as a navigation utility, which is exactly what it is not.
+ *   - Corner radii are 4px or fully round. Nothing in between, because the
+ *     12px-everywhere look is what makes web apps feel generic.
+ */
+
+:root {
+  --ink-900: #0b0b0c;
+  --ink-850: #101012;
+  --ink-800: #141416;
+  --ink-700: #1c1c20;
+  --ink-600: #2a2a2e;
+
+  --paper-100: #f5f2ec;
+  --paper-300: #c4bfb6;
+  --paper-400: #9c9890;
+  --paper-600: #625e58;
+
+  --signal: #e8a33d;
+  --signal-dim: #6b4d1e;
+  --signal-glow: rgba(232, 163, 61, 0.16);
+
+  --ground: var(--ink-900);
+  --raised: var(--ink-800);
+  --hairline: var(--ink-600);
+  --text: var(--paper-100);
+  --text-dim: var(--paper-400);
+  --text-faint: var(--paper-600);
+
+  --display: "Instrument Serif", ui-serif, Georgia, serif;
+  --ui:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+    sans-serif;
+
+  --r-sm: 4px;
+  --r-full: 999px;
+
+  /* A single easing used everywhere, so motion feels like one hand made it. */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Safe-area aware gutters, because this runs full-screen on a phone. */
+  --gutter: 22px;
+  --top: max(env(safe-area-inset-top), 14px);
+  --bottom: max(env(safe-area-inset-bottom), 18px);
+}
+
+/**
+ * Daylight mode is a real inversion rather than a washed-out theme. The amber
+ * stays: it is the one accent that survives direct sun, which is the entire
+ * reason it was chosen over blue.
+ */
+:root[data-theme="day"] {
+  --ground: #f7f4ee;
+  --raised: #ffffff;
+  --hairline: #dcd6c9;
+  --text: #111013;
+  --text-dim: #4f4b45;
+  --text-faint: #8a857d;
+  --signal: #b4761b;
+  --signal-dim: #e6cfa6;
+  --signal-glow: rgba(180, 118, 27, 0.12);
+}

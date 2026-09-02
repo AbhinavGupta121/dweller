@@ -1,0 +1,77 @@
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  /* Square top corners would read as a page; fully round is impossible for a
+     panel. This is the one place the radius scale bends, and it bends once. */
+  border-radius: 18px 18px 0 0;
+  border-top: 1px solid var(--hairline);
+  /* Nearly opaque. The glass look is worth having at the edge, but this is read
+     one-handed in daylight while moving, and every point of transparency costs
+     contrast against a map that is deliberately busy. */
+  background: color-mix(in srgb, var(--raised) 96%, transparent);
+  backdrop-filter: blur(26px) saturate(1.25);
+  box-shadow: 0 -18px 48px -14px rgb(0 0 0 / 0.55);
+  transition: height 340ms var(--ease-out);
+  overflow: hidden;
+}
+
+/* While a thumb is down the height follows the finger exactly. Any transition
+   here reads as lag. */
+.sheet[data-dragging] {
+  transition: none;
+}
+
+.grip {
+  flex: none;
+  padding: 7px var(--gutter) 0;
+  cursor: grab;
+  touch-action: none;
+  /* The grip is a slider for keyboard users; the focus ring belongs on the
+     grabber itself rather than around the whole header. */
+  outline: none;
+}
+
+.grip:active {
+  cursor: grabbing;
+}
+
+.grabber {
+  display: block;
+  width: 34px;
+  height: 4px;
+  margin: 0 auto 10px;
+  border-radius: var(--r-full);
+  background: var(--hairline);
+  transition: background 200ms var(--ease);
+}
+
+.grip:focus-visible .grabber {
+  background: var(--signal);
+  box-shadow: 0 0 0 3px var(--signal-glow);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 var(--gutter) calc(var(--bottom) + 8px);
+}
+
+/* Collapsed, the body is dead weight: hiding it stops a stray scroll from
+   showing content the walker cannot see the top of. */
+.sheet:not([data-expanded="true"]) .body {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    transition: none;
+  }
+}

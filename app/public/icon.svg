@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0B0B0C"/>
+  <!-- A walked path, and the point you are at. -->
+  <path d="M128 400 C 168 300, 208 300, 248 252 S 300 176, 384 128"
+        fill="none" stroke="#6B4D1E" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="248" cy="252" r="34" fill="#E8A33D"/>
+  <circle cx="248" cy="252" r="62" fill="none" stroke="#E8A33D" stroke-width="8" opacity="0.5"/>
+  <circle cx="248" cy="252" r="94" fill="none" stroke="#E8A33D" stroke-width="6" opacity="0.22"/>
+</svg>

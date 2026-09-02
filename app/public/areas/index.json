@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "areas": [
+    {
+      "id": "harvard-yard",
+      "name": "Harvard Yard",
+      "center": [
+        -71.1169,
+        42.3744
+      ],
+      "clip": [
+        42.3705,
+        -71.124,
+        42.379,
+        -71.112
+      ],
+      "subjects": 20,
+      "beats": 78
+    }
+  ]
+}

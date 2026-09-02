@@ -1,0 +1,260 @@
+.screen {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: var(--top) var(--gutter) var(--bottom);
+  gap: 24px;
+}
+
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-size: 26px;
+  letter-spacing: -0.01em;
+}
+
+.wordmark span {
+  color: var(--signal);
+}
+
+.middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+}
+
+.eyebrow {
+  composes: label from global;
+  margin-bottom: 14px;
+}
+
+.areaName {
+  font-family: var(--display);
+  font-size: clamp(44px, 13vw, 68px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+}
+
+.blurb {
+  color: var(--text-dim);
+  font-size: 16px;
+  line-height: 1.55;
+  max-width: 34ch;
+}
+
+/*
+ * What the app can do here, as a two-rung ladder rather than a stat block. The
+ * old inventory counted one prepared area's beats, which stopped being the
+ * interesting number once the app worked in places nobody had prepared.
+ */
+.coverage {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 30px;
+}
+
+.covRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 14px;
+}
+
+.covRow:last-child {
+  border-bottom: none;
+}
+
+.covDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--text-faint);
+  flex: none;
+}
+
+.covDot[data-state="ok"] {
+  background: var(--signal);
+}
+
+.covDot[data-state="warn"] {
+  background: var(--signal-dim);
+}
+
+.covName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.covNote {
+  color: var(--text-faint);
+  font-size: 12px;
+  text-align: right;
+  flex: none;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.permissions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+/* Also applied to a button, for the key row, hence the explicit width. */
+.permRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 14px;
+  text-align: left;
+  color: inherit;
+}
+
+.permRow:last-child {
+  border-bottom: none;
+}
+
+.permDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--text-faint);
+  flex: none;
+}
+
+.permDot[data-state="ok"] {
+  background: var(--signal);
+}
+
+.permDot[data-state="warn"] {
+  background: var(--signal-dim);
+}
+
+.permName {
+  flex: 1;
+}
+
+.permNote {
+  color: var(--text-faint);
+  font-size: 12px;
+  text-align: right;
+}
+
+.begin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 19px 22px;
+  border-radius: var(--r-full);
+  background: var(--signal);
+  color: var(--ink-900);
+  font-size: 17px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  transition: transform 120ms var(--ease);
+}
+
+.begin:active {
+  transform: scale(0.985);
+}
+
+.begin:disabled {
+  opacity: 0.4;
+}
+
+.secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 15px 22px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--hairline);
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+.secondary:active {
+  border-color: var(--signal-dim);
+}
+
+.error {
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--signal-dim);
+  color: var(--signal);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* Instructions, not an alarm: a blocked permission is fixable and the user has
+ * to be told where. Deliberately quieter than .error. */
+.recover {
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--hairline);
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.keyEditor {
+  display: flex;
+  gap: 8px;
+}
+
+.keyInput {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.keyInput:focus {
+  outline: none;
+  border-color: var(--signal-dim);
+}
+
+.keySave {
+  padding: 13px 18px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--signal-dim);
+  color: var(--signal);
+  font-size: 14px;
+  flex: none;
+}
+
+.loading {
+  color: var(--text-faint);
+  font-size: 14px;
+}

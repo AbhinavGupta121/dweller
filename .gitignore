@@ -1,0 +1,25 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# Harvested source data. Tens of megabytes of raw OSM, Wikipedia and Wikidata
+# responses, all reproducible with `npm run harvest`. Not worth versioning.
+tools/cache/
+
+# Derived from tools/corpus/ by `npm run pack`. The packed copy that the app
+# actually serves lives in app/public/areas/ and is committed, so a deploy needs
+# no build-time data step.
+tools/build/
+
+# Machine-drafted beats and their fact-check verdicts: working files, sometimes
+# large, and regenerable. The promoted output is kept because a human curated it.
+tools/generated/*
+!tools/generated/*/promoted.mjs
+
+# Rendered narration. Large, binary, and reproducible from the corpus with
+# `npm run tts`. The app falls back to on-device speech when it is absent.
+app/public/areas/*/audio/

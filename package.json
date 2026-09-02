@@ -1,0 +1,28 @@
+{
+  "name": "dweller",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A self-guided walk that talks about wherever you are, and stays quiet when there is nothing worth saying.",
+  "scripts": {
+    "dev": "npm --prefix app run dev -- --host",
+    "build": "npm --prefix app run build",
+    "preview": "npm --prefix app run preview -- --host",
+    "install:app": "npm --prefix app install",
+    "harvest": "node tools/harvest.mjs",
+    "resolve": "node tools/resolve.mjs",
+    "pack": "node tools/corpus/index.mjs",
+    "content": "npm run harvest && npm run resolve && npm run pack",
+    "write": "node tools/gemini/write.mjs",
+    "factcheck": "node tools/gemini/factcheck.mjs",
+    "grade": "node tools/gemini/grade.mjs",
+    "tts": "node tools/gemini/tts.mjs",
+    "verify": "cd app && npx tsx scripts/verify-walk.ts",
+    "typecheck": "cd app && npx tsc --noEmit -p tsconfig.app.json",
+    "lint": "npm --prefix app run lint",
+    "check": "npm run typecheck && npm run verify",
+    "tunnel": "bash tools/tunnel.sh",
+    "verify:live": "cd app && npx tsx scripts/verify-live.ts",
+    "verify:live:nokey": "cd app && npx tsx scripts/verify-live.ts --wikipedia-only"
+  }
+}

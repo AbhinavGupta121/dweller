@@ -1,0 +1,68 @@
+name: deploy
+
+# Publishes the static build to GitHub Pages.
+#
+# Before the first run: Settings -> Pages -> Source: "GitHub Actions".
+# Nothing else to configure. There is no server, no API key and no secret: all
+# the narration is baked into the area pack at build time, which is what makes
+# the whole thing free to host and safe to make public.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A walk in progress is served from cache, but never publish two builds at once.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: app
+
+      - name: Typecheck
+        run: npx tsc --noEmit -p tsconfig.app.json
+        working-directory: app
+
+      # The simulated walk is the only test that exercises the estimator and the
+      # director together. If it reports problems the tour is broken even though
+      # everything compiles, so it gates the deploy.
+      - name: Verify a simulated walk
+        run: npx tsx scripts/verify-walk.ts
+        working-directory: app
+
+      - name: Build
+        run: npm run build
+        working-directory: app
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

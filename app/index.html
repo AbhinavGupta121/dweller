@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover is what lets the layout reach under the notch and
+         home indicator, which the safe-area gutters then compensate for. -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#0B0B0C" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Dweller" />
+
+    <title>Dweller</title>
+    <meta
+      name="description"
+      content="A self-guided walk that talks about wherever you are, adapts to how you walk, and stays quiet when there is nothing worth saying."
+    />
+
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icon.svg" />
+
+    <!-- Fonts are self-hosted, so preloading them removes the flash of fallback
+         type on the largest text on screen. -->
+    <link
+      rel="preload"
+      href="./fonts/instrument-serif-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="./fonts/inter-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <style>
+      /* Painted before the bundle loads, so there is no white flash outdoors. */
+      html {
+        background: #0b0b0c;
+      }
+      @media (prefers-color-scheme: light) {
+        html {
+          background: #f7f4ee;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

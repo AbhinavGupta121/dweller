@@ -1,0 +1,756 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--ground);
+  color: var(--text);
+}
+
+/* Stands in for the map while its chunk loads. Same colour the map settles on,
+   so the transition is a fade-in of streets rather than a flash. */
+.mapPlaceholder {
+  position: absolute;
+  inset: 0;
+  background: var(--ground);
+}
+
+/* ------------------------------------------------------------- top bar --- */
+
+.topBar {
+  position: absolute;
+  top: var(--top);
+  left: var(--gutter);
+  right: var(--gutter);
+  z-index: 4;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  pointer-events: none;
+}
+
+/*
+ * Floating glass rather than a solid bar. A solid header would cut the map off
+ * at a straight line and cost a strip of the thing the screen is mostly for.
+ */
+.statusPill {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 13px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--raised) 84%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  pointer-events: auto;
+}
+
+.pulse {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: var(--r-full);
+  background: var(--signal);
+}
+
+/* Standing still is a slow breath; walking is steady; brisk stops blinking
+   because at that pace a flashing dot is just noise. */
+.pulse[data-motion="still"] {
+  animation: breathe 3.4s var(--ease) infinite;
+}
+
+.pulse[data-motion="walking"] {
+  animation: breathe 1.5s var(--ease) infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 var(--signal-glow);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 0 5px transparent;
+  }
+}
+
+.statusText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--ui);
+  font-size: 12.5px;
+  color: var(--text-dim);
+  letter-spacing: 0.01em;
+}
+
+.demoTag {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  background: var(--signal-dim);
+  color: var(--paper-100);
+  font-family: var(--ui);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+}
+
+.clock {
+  flex: none;
+  font-family: var(--ui);
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+
+.mapButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.glassButton {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--raised) 84%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition:
+    color 200ms var(--ease),
+    border-color 200ms var(--ease);
+}
+
+.glassButton[data-on="true"] {
+  color: var(--signal);
+  border-color: color-mix(in srgb, var(--signal) 45%, transparent);
+}
+
+.glassButton:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------- now bar --- */
+
+.nowBar {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.nowText {
+  flex: 1;
+  min-width: 0;
+}
+
+.nowKicker {
+  font-family: var(--ui);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--signal);
+  margin-bottom: 3px;
+}
+
+.nowTitle {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  /* Fluid so a long building name still fits one line on a small phone. */
+  font-size: clamp(21px, 6.4vw, 30px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.action {
+  flex: none;
+  padding: 9px 16px;
+  border: 1px solid var(--signal);
+  border-radius: var(--r-full);
+  background: var(--signal);
+  color: var(--ink-900);
+  font-family: var(--ui);
+  font-size: 13px;
+  font-weight: 560;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    transform 160ms var(--ease),
+    opacity 200ms var(--ease);
+}
+
+.action:active {
+  transform: scale(0.97);
+}
+
+.action:disabled {
+  background: transparent;
+  border-color: var(--hairline);
+  color: var(--text-faint);
+  cursor: default;
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* The beat's progress, as a hairline rather than a bar: it is reassurance that
+   something is happening, not a number anyone needs. */
+.progressTrack {
+  height: 1px;
+  margin: 12px 0 0;
+  background: var(--hairline);
+  opacity: 0;
+  transition: opacity 300ms var(--ease);
+}
+
+.progressTrack[data-visible="true"] {
+  opacity: 1;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--signal);
+  transform-origin: left;
+  transition: transform 400ms linear;
+}
+
+/* ---------------------------------------------------------------- tabs --- */
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  margin: 14px -4px 12px;
+}
+
+.tab {
+  position: relative;
+  padding: 7px 10px 9px;
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  font-family: var(--ui);
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: color 200ms var(--ease);
+}
+
+.tab::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+  height: 1.5px;
+  background: var(--signal);
+  transform: scaleX(0);
+  transition: transform 240ms var(--ease-out);
+}
+
+.tab[data-active="true"] {
+  color: var(--text);
+}
+
+.tab[data-active="true"]::after {
+  transform: scaleX(1);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: -2px;
+  border-radius: var(--r-sm);
+}
+
+.tabCount {
+  margin-left: 5px;
+  font-size: 10.5px;
+  color: var(--signal);
+}
+
+/* -------------------------------------------------------------- panels --- */
+
+.panel {
+  padding-top: 4px;
+  animation: fade 260ms var(--ease-out);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.lead {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.note {
+  margin: 10px 0 0;
+  font-family: var(--ui);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.focusRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.chip {
+  padding: 3px 8px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  font-family: var(--ui);
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* Provenance is the one chip that should catch the eye, because it is the one
+   that tells you how much to trust the sentence being read out. */
+.chip[data-tone="origin"] {
+  border-color: color-mix(in srgb, var(--signal) 40%, transparent);
+  color: var(--signal);
+}
+
+.look {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-top: 16px;
+  padding: 11px 13px;
+  border-left: 2px solid var(--signal);
+  background: var(--signal-glow);
+}
+
+.lookIcon {
+  flex: none;
+  font-family: var(--ui);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--signal);
+}
+
+.lookText {
+  font-family: var(--display);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.captions {
+  margin: 16px 0 0;
+  font-family: var(--display);
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+/* Said already, and dimmed — so a glance finds the place the voice is at. */
+.spokenAlready {
+  color: var(--text);
+}
+
+/* --------------------------------------------------------------- lists --- */
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 2px;
+  border: none;
+  border-bottom: 1px solid var(--hairline);
+  background: none;
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.row[data-focus="true"] .rowName {
+  color: var(--signal);
+}
+
+.rowName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rowMeta {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.rowDir {
+  color: var(--text-dim);
+}
+
+/* Closing, holding, or falling behind — a triangle rather than a word, because
+   the list is scanned rather than read. */
+.trend {
+  width: 0;
+  height: 0;
+  border-left: 3.5px solid transparent;
+  border-right: 3.5px solid transparent;
+}
+
+.trend[data-trend="approaching"] {
+  border-bottom: 5px solid var(--signal);
+}
+
+.trend[data-trend="leaving"] {
+  border-top: 5px solid var(--text-faint);
+}
+
+.trend[data-trend="holding"] {
+  width: 7px;
+  height: 1.5px;
+  border: none;
+  background: var(--text-faint);
+}
+
+/* ----------------------------------------------------------- place card --- */
+
+.back {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  font-family: var(--ui);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.photo {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  margin-bottom: 14px;
+  /* Photos come from Wikimedia in whatever grading they were uploaded with;
+     easing them back stops one bright picture wrecking the palette. */
+  filter: saturate(0.86) contrast(1.02);
+}
+
+.cardTitle {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 1.15;
+}
+
+.link {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--signal);
+  font-family: var(--ui);
+  font-size: 12.5px;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--signal) 40%, transparent);
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------- heard --- */
+
+.heardItem {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.heardSubject {
+  font-family: var(--ui);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--signal);
+  margin-bottom: 7px;
+}
+
+.heardText {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.heardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 9px;
+  font-family: var(--ui);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+/* ---------------------------------------------------------------- tune --- */
+
+.groupTitle {
+  margin: 26px 0 11px;
+  font-family: var(--ui);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-faint);
+}
+
+.panel > .groupTitle:first-child {
+  margin-top: 6px;
+}
+
+.segmented {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+}
+
+.segment {
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  border-radius: var(--r-full);
+  background: none;
+  color: var(--text-dim);
+  font-family: var(--ui);
+  font-size: 12.5px;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition:
+    background 200ms var(--ease),
+    color 200ms var(--ease);
+}
+
+.segment[data-active="true"] {
+  background: var(--signal);
+  color: var(--ink-900);
+  font-weight: 560;
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 1px;
+}
+
+.sliderRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 9px 0;
+}
+
+.sliderLabel {
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.sliderValue {
+  font-family: var(--ui);
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.slider {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  appearance: none;
+  background: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--hairline);
+}
+
+.slider::-moz-range-track {
+  height: 1px;
+  background: var(--hairline);
+}
+
+/* Deliberately large for a thumb on the move: the target is 22px even though
+   the dot looks like 12. */
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -5.5px;
+  border: none;
+  border-radius: var(--r-full);
+  background: var(--signal);
+}
+
+.slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: var(--r-full);
+  background: var(--signal);
+}
+
+.slider:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 4px;
+  border-radius: var(--r-sm);
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 0;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--ui);
+  font-size: 13px;
+}
+
+.switch {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 23px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+  background: none;
+  cursor: pointer;
+  transition:
+    background 220ms var(--ease),
+    border-color 220ms var(--ease);
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 15px;
+  height: 15px;
+  border-radius: var(--r-full);
+  background: var(--text-faint);
+  transition:
+    transform 220ms var(--ease-out),
+    background 220ms var(--ease);
+}
+
+.switch[data-on="true"] {
+  background: var(--signal);
+  border-color: var(--signal);
+}
+
+.switch[data-on="true"]::after {
+  transform: translateX(17px);
+  background: var(--ink-900);
+}
+
+.switch:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.endWalk {
+  width: 100%;
+  margin: 26px 0 8px;
+  padding: 14px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+  background: none;
+  color: var(--text-dim);
+  font-family: var(--ui);
+  font-size: 13.5px;
+  cursor: pointer;
+  transition:
+    color 200ms var(--ease),
+    border-color 200ms var(--ease);
+}
+
+.endWalk:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+}
+
+/* --------------------------------------------------------------- debug --- */
+
+.debug {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.75;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+}
+
+.debug b {
+  color: var(--text-faint);
+  font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse,
+  .panel {
+    animation: none;
+  }
+  .progressFill,
+  .tab::after,
+  .switch::after {
+    transition: none;
+  }
+}
